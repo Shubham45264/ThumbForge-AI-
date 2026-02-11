@@ -1,0 +1,40 @@
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Environment variables
+.env
+frontend/.env
+frontend/.env.local
+
+# Build outputs
+dist/
+frontend/dist/
+frontend/dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor Files
+.vscode/
+.idea/
+*.suo
+*.sln
+*.sw?
+
+# Uploaded Assets
+uploads/Thumbnails/*
+!uploads/Thumbnails/.gitkeep
+
+# IDE and Project specific
+.agent/
+.gemini/
+lovable_prompt.md
+final_test.js
+test_apis.js
