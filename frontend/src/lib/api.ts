@@ -1,6 +1,14 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://thumbforge-ai.onrender.com/api/";
+const getBaseURL = () => {
+  let url = import.meta.env.VITE_API_URL || "https://thumbforge-ai.onrender.com/api/";
+  if (!url.endsWith("/")) url += "/";
+  if (!url.includes("/api/")) url += "api/";
+  return url;
+};
+
+const API_BASE = getBaseURL();
+console.log("Using API Base URL:", API_BASE);
 const UPLOADS_BASE = import.meta.env.VITE_UPLOADS_URL || "https://thumbforge-ai.onrender.com/";
 
 const api = axios.create({
