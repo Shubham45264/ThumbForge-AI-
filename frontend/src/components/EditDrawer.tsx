@@ -20,9 +20,10 @@ interface Props {
   onClose: () => void;
   thumbnail: Thumbnail | null;
   onUpdated: () => void;
+  onDelete: (id: string) => void;
 }
 
-export default function EditDrawer({ open, onClose, thumbnail, onUpdated }: Props) {
+export default function EditDrawer({ open, onClose, thumbnail, onUpdated, onDelete }: Props) {
   const [videoName, setVideoName] = useState("");
   const [version, setVersion] = useState("");
   const [paid, setPaid] = useState(false);
@@ -52,6 +53,14 @@ export default function EditDrawer({ open, onClose, thumbnail, onUpdated }: Prop
     }
   };
 
+  const handleDelete = async () => {
+    if (!thumbnail) return;
+    if (confirm("Are you sure you want to delete this thumbnail?")) {
+      onDelete(thumbnail._id);
+      onClose();
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent className="bg-card border-border">
@@ -73,6 +82,16 @@ export default function EditDrawer({ open, onClose, thumbnail, onUpdated }: Prop
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Saving…" : "Save Changes"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={handleDelete}
+            disabled={loading}
+          >
+            Delete Thumbnail
           </Button>
         </form>
       </SheetContent>

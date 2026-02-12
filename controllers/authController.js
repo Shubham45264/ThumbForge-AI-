@@ -82,7 +82,15 @@ exports.login = async (request, reply) => {
       id: user._id
     });
 
-    reply.send({ token });
+    reply.send({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        country: user.country
+      }
+    });
 
   } catch (error) {
     reply.code(500).send({

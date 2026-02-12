@@ -47,7 +47,6 @@ export default function Login() {
       <PageTransition>
         <div className="w-full max-w-md">
           <div className="text-center mb-8 flex flex-col items-center">
-            <img src="/logo.png" alt="ThumbForge AI" className="h-20 w-auto mb-4" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">ThumbForge AI</h1>
             <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
           </div>

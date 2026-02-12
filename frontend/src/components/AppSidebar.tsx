@@ -33,7 +33,6 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
           <span className="text-lg font-bold tracking-tight text-foreground">ThumbForge AI</span>
         </div>
       </SidebarHeader>

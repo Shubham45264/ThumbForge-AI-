@@ -146,6 +146,7 @@ export default function Dashboard() {
         onClose={() => setDrawerOpen(false)}
         thumbnail={editTarget}
         onUpdated={fetchThumbnails}
+        onDelete={handleDelete}
       />
     </div>
   );

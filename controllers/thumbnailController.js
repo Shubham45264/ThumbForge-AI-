@@ -101,11 +101,16 @@ exports.updateThumbnail = async (request, reply) => {
 
 exports.deleteThumbnail = async (request, reply) => {
   try {
+    const { id } = request.params;
+    request.log.info({ id, user: request.user.id }, "Attempting to delete thumbnail");
+
     const thumbnail = await Thumbnail.findOneAndDelete({
-      _id: request.params.id,
+      _id: id,
       user: request.user.id,
     });
+
     if (!thumbnail) {
+      request.log.warn({ id }, "Thumbnail not found for deletion");
       return reply.notFound("Thumbnail not found");
     }
 
@@ -120,28 +125,40 @@ exports.deleteThumbnail = async (request, reply) => {
     if (fs.existsSync(filepath)) {
       try {
         fs.unlinkSync(filepath);
+        request.log.info({ filepath }, "Deleted associated file");
       } catch (err) {
-        request.log.error(`Failed to delete file: ${filepath}`, err);
+        request.log.error({ filepath, err }, "Failed to delete file");
       }
     }
 
     reply.send({ message: "Thumbnail deleted successfully" });
   } catch (error) {
-    reply.send(error);
+    request.log.error(error);
+    reply.code(500).send({ error: "Delete failed", message: error.message });
   }
 };
 
 exports.deleteAllThumbnails = async (request, reply) => {
   try {
     const { ids } = request.body || {};
+    request.log.info({ ids, user: request.user.id }, "Bulk delete request received");
+
     let query = { user: request.user.id };
 
     if (ids && Array.isArray(ids) && ids.length > 0) {
       query._id = { $in: ids };
+    } else if (!ids) {
+      // If no body provided, delete all for user (optional behavior, maybe safer to return error)
+      // For now, let's keep it but log it
+      request.log.warn("Deleting ALL thumbnails for user as no ids provided");
+    } else {
+      return reply.badRequest("Invalid ids provided");
     }
 
     const thumbnails = await Thumbnail.find(query);
-    await Thumbnail.deleteMany(query);
+    const result = await Thumbnail.deleteMany(query);
+
+    request.log.info({ deletedCount: result.deletedCount }, "Thumbnails deleted from DB");
 
     for (const thumbnail of thumbnails) {
       const filepath = path.join(
@@ -156,12 +173,16 @@ exports.deleteAllThumbnails = async (request, reply) => {
         try {
           fs.unlinkSync(filepath);
         } catch (err) {
-          request.log.error(`Failed to delete file: ${filepath}`, err);
+          request.log.error({ filepath, err }, "Failed to delete file in bulk delete");
         }
       }
     }
-    reply.send({ message: "Thumbnails deleted successfully" });
+    reply.send({
+      message: "Thumbnails deleted successfully",
+      deletedCount: result.deletedCount
+    });
   } catch (error) {
-    reply.send(error);
+    request.log.error(error);
+    reply.code(500).send({ error: "Bulk delete failed", message: error.message });
   }
 };
