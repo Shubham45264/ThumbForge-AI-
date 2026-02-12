@@ -8,7 +8,12 @@ const fastify = require("fastify")({ logger: true });
 // --------------------
 // Core plugins
 // --------------------
-fastify.register(require("@fastify/cors"));
+fastify.register(require("@fastify/cors"), {
+  origin: ["https://thumb-forge-ai.vercel.app", "http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+});
 fastify.register(require("@fastify/sensible"));
 fastify.register(require("@fastify/multipart"));
 fastify.register(require("@fastify/static"), {
