@@ -9,8 +9,15 @@ const fastify = require("fastify")({ logger: true });
 // Core plugins
 // --------------------
 fastify.register(require("@fastify/cors"), {
-  origin: ["https://thumb-forge-ai.vercel.app", "http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  origin: (origin, cb) => {
+    // Allow localhost or any Vercel domain
+    if (!origin || /localhost/.test(origin) || /\.vercel\.app$/.test(origin)) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error("Not allowed by CORS"), false);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 });
